@@ -26,10 +26,9 @@ def list_channels(name, url, language, mode, category):
     cwd = ADDON.getAddonInfo('path')
     url = fullurl.format(category, 'GetCatalogueTree', 'categoryId')
     postData = url
-    print (postData)
+    print ('list_channels url=' + postData)
     data = make_request(postData)
     result = json.loads(data)
-    print (str(result))
     
     if "resultCode" in result:
         if 'OK' == result['resultCode']:
@@ -38,7 +37,6 @@ def list_channels(name, url, language, mode, category):
                     if len(result['resultObj']['categoryList']) > 0:
                         if 'categoryList' in result['resultObj']['categoryList'][0]:
                             dcList = result['resultObj']['categoryList'][0]['categoryList']
-                            print (len(dcList))
                             for catl in dcList:
                                 #xbmcgui.Dialog().ok("11111", catl['contentTitle'])
                                 #print (catl['contentTitle'] + ' - list_channels ' + str(catl['categoryId']))
@@ -54,23 +52,21 @@ def list_channels_content(name, url, language, mode, category):
     cwd = ADDON.getAddonInfo('path')
     url = fullurl.format(category, 'GetArrayContentList', 'categoryId')
     postData = url
-    print (postData)
+    print ('list_channels_content url=' + postData)
     data = make_request(postData)
     result = json.loads(data)
-    print (str(result))
 
     if "resultCode" in result:
         if 'OK' == result['resultCode']:
             if "resultObj" in result:
                 if 'contentList' in result['resultObj']:
                     dcList = result['resultObj']['contentList']
-                    print (len(dcList))
                     for catl in dcList:
-                        aggCategoryId = list_shows_agg_content(catl['contentId'])
+                        #aggCategoryId = list_shows_agg_content(catl['contentId'])
                         #addDir(catl['contentTitle'], '&categoryId=' + str(catl['contentId']), 2, postData, language, aggCategoryId)
                         show_link = 'http://account.hotstar.com/AVS/besc?action=GetAggregatedContentDetails&channel=PCTV&contentId='+str(catl['contentId'])
                         show_img = 'http://media0-starag.startv.in/r1/thumbs/PCTV/'+str(catl['urlPictures'])[-2:]+'/'+str(catl['urlPictures'])+'/PCTV-'+str(catl['urlPictures'])+'-vl.jpg'
-                        addDir(catl['contentTitle'], '&categoryId=' + str(catl['contentId']), 2, show_img, language, aggCategoryId)
+                        addDir(catl['contentTitle'], '&categoryId=' + str(catl['contentId']), 2, show_img, language, catl['contentId'])
                         
                     xbmcplugin.endOfDirectory(int(sys.argv[1]))
         else:
@@ -81,10 +77,9 @@ def list_shows_agg_content(category):
     cwd = ADDON.getAddonInfo('path')
     url = fullurl.format(category, 'GetAggregatedContentDetails', 'contentId')
     postData = url
-    print (postData)
+    print ('list_shows_agg_content url=' + postData)
     data = make_request(postData)
     result = json.loads(data)
-    print (str(result))
 
     if "resultCode" in result:
         if 'OK' == result['resultCode']:
@@ -98,22 +93,21 @@ def list_shows_agg_content(category):
             
 def list_show_chapters(name, url, language, mode, category):
     cwd = ADDON.getAddonInfo('path')
-    url = fullurl.format(category, 'GetCatalogueTree', 'categoryId')
+    
+    aggCategoryId = list_shows_agg_content(category)
+    url = fullurl.format(aggCategoryId, 'GetCatalogueTree', 'categoryId')
     postData = url
-    print (postData)
+    print ('list_show_chapters url=' + postData)
     data = make_request(postData)
     result = json.loads(data)
-    print (str(result))
 
     if "resultCode" in result:
         if 'OK' == result['resultCode']:
             if "resultObj" in result:
                 if 'categoryList' in result['resultObj']:
                     if len(result['resultObj']['categoryList']) > 0:
-                        print ('eed ' + str(len(result['resultObj']['categoryList'])))
                         if 'categoryList' in result['resultObj']['categoryList'][0]:
                             dcList = result['resultObj']['categoryList'][0]['categoryList']
-                            print (len(dcList))
                             for catl in dcList:
                                 #xbmcgui.Dialog().ok("11111", catl['contentTitle'])
                                 #print (catl['contentTitle'] + ' - list_channels ' + str(catl['categoryId']))
@@ -128,16 +122,15 @@ def list_show_chapter_episodes(name, url, language, mode, category):
     cwd = ADDON.getAddonInfo('path')
     url = fullurl.format(category, 'GetArrayContentList', 'categoryId')
     postData = url
-    print (postData)
+    print ('list_show_chapter_episodes url=' + postData)
     data = make_request(postData)
     result = json.loads(data)
-    print (str(result))
+
     if "resultCode" in result:
         if 'OK' == result['resultCode']:
             if "resultObj" in result:
                 if 'contentList' in result['resultObj']:
                     dcList = result['resultObj']['contentList']
-                    print (len(dcList))
                     dcListSorted = sorted(dcList, key=operator.itemgetter("episodeNumber"), reverse=True)
                     for catl in dcListSorted:
                         fin_ep_images = 'http://media0-starag.startv.in/r1/thumbs/PCTV/'+str(catl['urlPictures'])[-2:]+'/'+str(catl['urlPictures'])+'/PCTV-'+str(catl['urlPictures'])+'-vl.jpg'
@@ -152,10 +145,10 @@ def get_cdn(name, url, language, mode, category):
     cwd = ADDON.getAddonInfo('path')
     url = cdnurl.format(category)
     postData = url
-    print (postData)
+    print ('get_cdn url=' + postData)
     data = make_request(postData)
     result = json.loads(data)
-    print (str(result))
+
     if "resultCode" in result:
         if 'OK' == result['resultCode']:
             if "resultObj" in result:
@@ -173,7 +166,7 @@ def play_video(name, url, language, mode, category):
     location = xbmc.getIPAddress()
 
     cdn_response = get_cdn(name, url, language, mode, category)
-    print ('play_video: ' + cdn_response)
+    #print ('play_video: ' + cdn_response)
     movie_link = ""
     movie_link = cdn_response
 
@@ -304,7 +297,7 @@ def addLink(name,url,iconimage):
 def addDir(name, url, mode, iconimage, lang='', catgory=564, duration=0, isPlayable=False, episode=0):
     try:
         name = unicode(name).decode("utf-8")
-        print ('addDir-catgory name=' + name + ',id=' + str(catgory))
+        print ('addDir-mode=' + str(mode) + ',url=' + url + ',catgory=' + str(catgory))
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&lang="+urllib.quote_plus(lang)+"&category="+str(catgory)
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
         # liz.setInfo( type="Video", infoLabels={ "Title": name, "Duration": duration } )

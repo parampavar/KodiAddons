@@ -1,4 +1,7 @@
 [B]Version 0.0.1[/B]
+- Changed to lazy loading of Shows
+
+[B]Version 0.0.1[/B]
 - Initial version of plugin
 - Credits :
 -    Yocoldrain for his HotStar-Rain addon
