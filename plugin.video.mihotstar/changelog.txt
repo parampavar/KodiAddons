@@ -1,0 +1,5 @@
+[B]Version 0.0.1[/B]
+- Initial version of plugin
+- Credits :
+-    Yocoldrain for his HotStar-Rain addon
+-    Humla for his Einthusan addon

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.mihotstar"
+       name="MiHotStar"
+       version="0.0.1"
+       provider-name="Zoobi">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+        <import addon="script.module.t0mm0.common" version="1.0.0"/>
+		<import addon="script.module.requests" version="2.7.0" />
+    </requires>
+    <extension point="xbmc.python.pluginsource"
+               library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary>Watch Hindi, Tamil  movies</summary>
+        <description>This XBMC plugin allows to watch Hindi and Tamil movies from Hotstar.com. Please support them.
+
+        Credits to Zoobi for the thumbnails.</description>
+    </extension>
+</addon>
