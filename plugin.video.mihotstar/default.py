@@ -38,11 +38,8 @@ def list_channels(name, url, language, mode, category):
                         if 'categoryList' in result['resultObj']['categoryList'][0]:
                             dcList = result['resultObj']['categoryList'][0]['categoryList']
                             for catl in dcList:
-                                #xbmcgui.Dialog().ok("11111", catl['contentTitle'])
-                                #print (catl['contentTitle'] + ' - list_channels ' + str(catl['categoryId']))
                                 fin_ep_images = 'http://media0-starag.startv.in/r1/thumbs/PCTV/'+str(catl['urlPictures'])[-2:]+'/'+str(catl['urlPictures'])+'/PCTV-'+str(catl['urlPictures'])+'-hs.jpg'
                                 addDir(catl['contentTitle'], '&categoryId=' + str(catl['categoryId']), 1, fin_ep_images, language, catl['categoryId'])
-                                #addDir(name, BASE_URL + link, 2, BASE_URL + image, language)
                             xbmcplugin.endOfDirectory(int(sys.argv[1]))
         else:
             print ('Unknown error')
@@ -62,8 +59,6 @@ def list_channels_content(name, url, language, mode, category):
                 if 'contentList' in result['resultObj']:
                     dcList = result['resultObj']['contentList']
                     for catl in dcList:
-                        #aggCategoryId = list_shows_agg_content(catl['contentId'])
-                        #addDir(catl['contentTitle'], '&categoryId=' + str(catl['contentId']), 2, postData, language, aggCategoryId)
                         show_link = 'http://account.hotstar.com/AVS/besc?action=GetAggregatedContentDetails&channel=PCTV&contentId='+str(catl['contentId'])
                         show_img = 'http://media0-starag.startv.in/r1/thumbs/PCTV/'+str(catl['urlPictures'])[-2:]+'/'+str(catl['urlPictures'])+'/PCTV-'+str(catl['urlPictures'])+'-vl.jpg'
                         addDir(catl['contentTitle'], '&categoryId=' + str(catl['contentId']), 2, show_img, language, catl['contentId'])
@@ -109,10 +104,7 @@ def list_show_chapters(name, url, language, mode, category):
                         if 'categoryList' in result['resultObj']['categoryList'][0]:
                             dcList = result['resultObj']['categoryList'][0]['categoryList']
                             for catl in dcList:
-                                #xbmcgui.Dialog().ok("11111", catl['contentTitle'])
-                                #print (catl['contentTitle'] + ' - list_channels ' + str(catl['categoryId']))
                                 addDir(catl['contentTitle'], '&categoryId=' + str(catl['categoryId']), 3, postData, language, catl['categoryId'])
-                                #addDir(name, BASE_URL + link, 2, BASE_URL + image, language)
                             xbmcplugin.endOfDirectory(int(sys.argv[1]))
         else:
             print ('Unknown error')
@@ -135,7 +127,6 @@ def list_show_chapter_episodes(name, url, language, mode, category):
                     for catl in dcListSorted:
                         fin_ep_images = 'http://media0-starag.startv.in/r1/thumbs/PCTV/'+str(catl['urlPictures'])[-2:]+'/'+str(catl['urlPictures'])+'/PCTV-'+str(catl['urlPictures'])+'-vl.jpg'
                         addDir(str(catl['episodeNumber']) + '-' + catl['episodeTitle'], '&categoryId=' + str(catl['contentId']), 4, fin_ep_images, language, catl['contentId'], catl['duration'], True, catl['episodeNumber'])
-                        #addDir(name, BASE_URL + link, 2, BASE_URL + image, language)
                     xbmcplugin.endOfDirectory(int(sys.argv[1]))
         else:
             print ('Unknown error')
@@ -300,13 +291,7 @@ def addDir(name, url, mode, iconimage, lang='', catgory=564, duration=0, isPlaya
         print ('addDir-mode=' + str(mode) + ',url=' + url + ',catgory=' + str(catgory))
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&lang="+urllib.quote_plus(lang)+"&category="+str(catgory)
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-        # liz.setInfo( type="Video", infoLabels={ "Title": name, "Duration": duration } )
-        # if isPlayable == True:
-            # liz.setProperty('IsPlayable', 'true')
-        # ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=not isPlayable)
         liz.setInfo( type="Video", infoLabels={ "Title": name, "Duration": duration, "episode": episode } )
-        #if isPlayable == True:
-        #liz.setProperty('IsPlayable', 'true')
         if 'vl.jpg' in iconimage:
             image2 = iconimage.replace('vl.jpg', 'hl.jpg')
             liz.setArt({'fanart': image2})
