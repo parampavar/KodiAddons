@@ -126,7 +126,7 @@ def list_show_chapter_episodes(name, url, language, mode, category):
                     dcListSorted = sorted(dcList, key=operator.itemgetter("episodeNumber"), reverse=True)
                     for catl in dcListSorted:
                         fin_ep_images = 'http://media0-starag.startv.in/r1/thumbs/PCTV/'+str(catl['urlPictures'])[-2:]+'/'+str(catl['urlPictures'])+'/PCTV-'+str(catl['urlPictures'])+'-vl.jpg'
-                        addDir(str(catl['episodeNumber']) + '-' + catl['episodeTitle'], '&categoryId=' + str(catl['contentId']), 4, fin_ep_images, language, catl['contentId'], catl['duration'], True, catl['episodeNumber'])
+                        addDir(str(catl['episodeNumber']) + '-' + catl['episodeTitle'] + time.strftime('%Y-%m-%d', time.localtime(catl['broadcastDate'])) , '&categoryId=' + str(catl['contentId']), 4, fin_ep_images, language, catl['contentId'], catl['duration'], True, catl['episodeNumber'])
                     xbmcplugin.endOfDirectory(int(sys.argv[1]))
         else:
             print ('Unknown error')
