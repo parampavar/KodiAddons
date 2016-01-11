@@ -15,7 +15,7 @@ import requests
 ADDON = xbmcaddon.Addon(id='plugin.video.mihotstar')
 fullurl = 'http://account.hotstar.com/AVS/besc?action={1}&{2}={0}&channel=PCTV'
 cdnurl = 'http://getcdn.hotstar.com/AVS/besc?action=GetCDN&asJson=Y&channel=PCTV&id={0}&type=VOD'
-ipaddress='0.0.0.0'
+ipaddress='124.30.87.233' #'0.0.0.0'
 
 s=requests.Session()
 
@@ -154,7 +154,7 @@ def get_cdn(name, url, language, mode, category):
 ##
 def play_video(name, url, language, mode, category):
 
-    location = xbmc.getIPAddress()
+    location = ipaddress
 
     cdn_response = get_cdn(name, url, language, mode, category)
     #print ('play_video: ' + cdn_response)
@@ -187,8 +187,9 @@ def get_video_url(name, url, language, mode, category):
     
     if manifest1:
         manifest_url = make_request(manifest1)
+        print 'MIH-manifest1 is', manifest1
         if manifest_url:
-
+            print 'MIH-manifest_url is', manifest_url
             matchlist2 = re.compile("BANDWIDTH=(\d+).*x720[^\n]*\n([^n].*)").findall(str(manifest_url))
             if matchlist2:
                 for (size, video) in matchlist2:
@@ -199,7 +200,7 @@ def get_video_url(name, url, language, mode, category):
                     videos.append( [size, video] )
         else:
             videos.append( [-2, match] )
-    
+    print 'MIH-vidoes len = ', len(videos)
     videos.sort(key=lambda L : L and L[0], reverse=True)
     cookieString = ""
     c = s.cookies
