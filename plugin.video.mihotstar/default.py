@@ -11,6 +11,7 @@ from datetime import date
 import codecs
 import json
 import requests
+import time
 
 ADDON = xbmcaddon.Addon(id='plugin.video.mihotstar')
 fullurl = 'http://account.hotstar.com/AVS/besc?action={1}&{2}={0}&channel=PCTV'
