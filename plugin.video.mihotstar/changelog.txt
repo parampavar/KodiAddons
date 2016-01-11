@@ -1,4 +1,8 @@
-[B]Version 0.0.1[/B]
+[B]Version 0.0.3[/B]
+- Added India IP to see if geo blocked contents will load
+- Added broadcaseDate to video name
+
+[B]Version 0.0.2[/B]
 - Changed to lazy loading of Shows
 
 [B]Version 0.0.1[/B]

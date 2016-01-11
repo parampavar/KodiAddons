@@ -127,7 +127,7 @@ def list_show_chapter_episodes(name, url, language, mode, category):
                     dcListSorted = sorted(dcList, key=operator.itemgetter("episodeNumber"), reverse=True)
                     for catl in dcListSorted:
                         fin_ep_images = 'http://media0-starag.startv.in/r1/thumbs/PCTV/'+str(catl['urlPictures'])[-2:]+'/'+str(catl['urlPictures'])+'/PCTV-'+str(catl['urlPictures'])+'-vl.jpg'
-                        addDir(str(catl['episodeNumber']) + '-' + catl['episodeTitle'] + time.strftime('%Y-%m-%d', time.localtime(catl['broadcastDate'])) , '&categoryId=' + str(catl['contentId']), 4, fin_ep_images, language, catl['contentId'], catl['duration'], True, catl['episodeNumber'])
+                        addDir(str(catl['episodeNumber']) + ' - ' + catl['episodeTitle'] + ' - ' + time.strftime('%Y-%m-%d', time.localtime(catl['broadcastDate'])) , '&categoryId=' + str(catl['contentId']), 4, fin_ep_images, language, catl['contentId'], catl['duration'], True, catl['episodeNumber'])
                     xbmcplugin.endOfDirectory(int(sys.argv[1]))
         else:
             print ('Unknown error')
@@ -187,8 +187,8 @@ def get_video_url(name, url, language, mode, category):
     manifest1 = manifest1.replace('manifest.f4m', 'master.m3u8')
     
     if manifest1:
-        manifest_url = make_request(manifest1)
-        print 'MIH-manifest1 is', manifest1
+        manifest_url = make_request(manifest1+"|X-Forwarded-For="+ipaddress)
+        print 'MIH-manifest1 is', manifest1+"|X-Forwarded-For="+ipaddress
         if manifest_url:
             print 'MIH-manifest_url is', manifest_url
             matchlist2 = re.compile("BANDWIDTH=(\d+).*x720[^\n]*\n([^n].*)").findall(str(manifest_url))
@@ -210,26 +210,28 @@ def get_video_url(name, url, language, mode, category):
         cookieString+= name2 + "=" + value + ";"
     print 'MIH-cookieString is', cookieString
     
-    raw3_start = videos[0][1]
-    high_video = raw3_start+"|Cookie="+cookieString+"&X-Forwarded-For="+ipaddress
-    print ('MIH-get_video_url >' + 'high_video is: ' + high_video)
-    print ('MIH-get_video_url >' + 'high_video name: ' + name)
-    
-    listitem =xbmcgui.ListItem(name)
-    listitem.setProperty('mimetype', 'video/x-msvideo')
-    listitem.setPath(high_video)
-    
-    # xbmc.executebuiltin("PlayMedia(%s)"%high_video)
-    ##xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
-    # xbmc.Player().play(high_video, listitem)
-    # sys.exit()
-    
-    playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-    playlist.clear()
+    if len(videos) > 1:
+        raw3_start = videos[0][1]
+        high_video = raw3_start+"|Cookie="+cookieString+"&X-Forwarded-For="+ipaddress
+        print ('MIH-get_video_url >' + 'high_video is: ' + high_video)
+        print ('MIH-get_video_url >' + 'high_video name: ' + name)
+        
+        listitem =xbmcgui.ListItem(name)
+        listitem.setProperty('mimetype', 'video/x-msvideo')
+        listitem.setPath(high_video)
+        
+        # xbmc.executebuiltin("PlayMedia(%s)"%high_video)
+        ##xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
+        # xbmc.Player().play(high_video, listitem)
+        # sys.exit()
+        
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.clear()
 
-    playlist.add(urllib.unquote(high_video), listitem)
-    xbmc.Player(xbmc.PLAYER_CORE_AUTO).play(playlist)
-    
+        playlist.add(urllib.unquote(high_video), listitem)
+        xbmc.Player(xbmc.PLAYER_CORE_AUTO).play(playlist)
+    else:
+        xbmcgui.Dialog().ok("Mi HotStar", 'Unable to play the video. Video may not be available in your region.')
 ##
 # Displays the setting view. Called when mode is 12
 ##
