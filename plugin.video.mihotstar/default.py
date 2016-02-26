@@ -187,10 +187,9 @@ def get_video_url(name, url, language, mode, category):
     manifest1 = manifest1.replace('manifest.f4m', 'master.m3u8')
     
     if manifest1:
-        manifest_url = make_request(manifest1+"|X-Forwarded-For="+ipaddress)
-        print 'MIH-manifest1 is', manifest1+"|X-Forwarded-For="+ipaddress
+        manifest_url = make_request(manifest1)
         if manifest_url:
-            print 'MIH-manifest_url is', manifest_url
+
             matchlist2 = re.compile("BANDWIDTH=(\d+).*x720[^\n]*\n([^n].*)").findall(str(manifest_url))
             if matchlist2:
                 for (size, video) in matchlist2:
@@ -201,7 +200,7 @@ def get_video_url(name, url, language, mode, category):
                     videos.append( [size, video] )
         else:
             videos.append( [-2, match] )
-    print 'MIH-vidoes len = ', len(videos)
+    
     videos.sort(key=lambda L : L and L[0], reverse=True)
     cookieString = ""
     c = s.cookies
@@ -210,28 +209,26 @@ def get_video_url(name, url, language, mode, category):
         cookieString+= name2 + "=" + value + ";"
     print 'MIH-cookieString is', cookieString
     
-    if len(videos) > 1:
-        raw3_start = videos[0][1]
-        high_video = raw3_start+"|Cookie="+cookieString+"&X-Forwarded-For="+ipaddress
-        print ('MIH-get_video_url >' + 'high_video is: ' + high_video)
-        print ('MIH-get_video_url >' + 'high_video name: ' + name)
-        
-        listitem =xbmcgui.ListItem(name)
-        listitem.setProperty('mimetype', 'video/x-msvideo')
-        listitem.setPath(high_video)
-        
-        # xbmc.executebuiltin("PlayMedia(%s)"%high_video)
-        ##xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
-        # xbmc.Player().play(high_video, listitem)
-        # sys.exit()
-        
-        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        playlist.clear()
+    raw3_start = videos[0][1]
+    high_video = raw3_start+"|Cookie="+cookieString+"&X-Forwarded-For="+ipaddress
+    print ('MIH-get_video_url >' + 'high_video is: ' + high_video)
+    print ('MIH-get_video_url >' + 'high_video name: ' + name)
+    
+    listitem =xbmcgui.ListItem(name)
+    listitem.setProperty('mimetype', 'video/x-msvideo')
+    listitem.setPath(high_video)
+    
+    # xbmc.executebuiltin("PlayMedia(%s)"%high_video)
+    ##xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
+    # xbmc.Player().play(high_video, listitem)
+    # sys.exit()
+    
+    playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+    playlist.clear()
 
-        playlist.add(urllib.unquote(high_video), listitem)
-        xbmc.Player(xbmc.PLAYER_CORE_AUTO).play(playlist)
-    else:
-        xbmcgui.Dialog().ok("Mi HotStar", 'Unable to play the video. Video may not be available in your region.')
+    playlist.add(urllib.unquote(high_video), listitem)
+    xbmc.Player(xbmc.PLAYER_CORE_AUTO).play(playlist)
+
 ##
 # Displays the setting view. Called when mode is 12
 ##
